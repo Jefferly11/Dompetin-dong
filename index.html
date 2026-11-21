@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>DompetinDong — Catat Uang, Hidup Tenang</title>
+  <meta name="description" content="DompetinDong: aplikasi pencatat keuangan harian dengan chat-to-log, batas aman harian, anggaran, dan target tabungan." />
+  <meta name="theme-color" content="#0B5D49" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ============ SVG SPRITE ============ -->
+<svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="lgBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17A67F" /><stop offset="1" stop-color="#0A5F49" />
+    </linearGradient>
+    <linearGradient id="lgCoin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFD96E" /><stop offset="1" stop-color="#F2A81D" />
+    </linearGradient>
+  </defs>
+
+  <!-- Logo: dompet ramah dengan koin mengintip -->
+  <symbol id="logo" viewBox="0 0 64 64">
+    <circle cx="34" cy="17" r="12" fill="url(#lgCoin)" />
+    <circle cx="34" cy="17" r="8" fill="none" stroke="#C98305" stroke-opacity=".5" stroke-width="1.6" />
+    <path d="M34 11.4l1.7 4 4 1.6-4 1.6-1.7 4-1.7-4-4-1.6 4-1.6z" fill="#fff" fill-opacity=".9" />
+    <rect x="6" y="21" width="52" height="36" rx="11" fill="url(#lgBody)" />
+    <path d="M15 26.5h19" stroke="#fff" stroke-opacity=".28" stroke-width="2.4" stroke-linecap="round" />
+    <rect x="41" y="31" width="22" height="15" rx="7.5" fill="#0A5F49" />
+    <circle cx="49.5" cy="38.5" r="3.4" fill="#FFD96E" />
+    <circle cx="20" cy="37" r="2.6" fill="#FFF6E0" />
+    <circle cx="31" cy="37" r="2.6" fill="#FFF6E0" />
+    <path d="M19 44c3 4 9 4 12 0" fill="none" stroke="#FFF6E0" stroke-width="2.6" stroke-linecap="round" />
+  </symbol>
+
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-pie" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 5.1A9.7 9.7 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4"/><path d="M6.6 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7c1.6 0 3-.4 4.3-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 .3 1.2 1 2 2 2 0-3-1-5 1-8z"/></symbol>
+  <symbol id="i-in" viewBox="0 0 24 24"><path d="M17 7 7 17M7 8v9h9"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M4 19h16"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V5M7.5 9.5 12 5l4.5 4.5M4 19h16"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+  <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/></symbol>
+</svg>
+
+<div class="stage">
+
+  <!-- ============ PANEL BRAND (hanya di layar lebar) ============ -->
+  <aside class="brand-side" aria-hidden="true">
+    <svg class="brand-side-logo"><use href="#logo" /></svg>
+    <h2 class="wordmark wordmark-xl">Dompetin<span>Dong</span></h2>
+    <p class="brand-side-tag">Catat uang jadi gampang. Ketik aja kayak chat, sisanya biar DompetinDong yang ngitung.</p>
+    <ul class="brand-side-list">
+      <li><b>Chat-to-Log</b> ketik "makan warteg 12rb", langsung tercatat</li>
+      <li><b>Batas aman harian</b> otomatis dibagi sampai hari target</li>
+      <li><b>Anggaran & Tabungan</b> pantau pos dan kejar impianmu</li>
+    </ul>
+    <p class="brand-side-hint">Buka di HP lalu pilih <em>Tambahkan ke Layar Utama</em> supaya terasa seperti aplikasi asli.</p>
+  </aside>
+
+  <!-- ============ APP ============ -->
+  <div class="app" id="app">
+
+    <!-- ONBOARDING -->
+    <div class="onboard" id="onboard" hidden>
+      <div class="ob-step" id="obStep1">
+        <div class="ob-hero">
+          <svg class="ob-logo"><use href="#logo" /></svg>
+          <h1 class="wordmark wordmark-xl">Dompetin<span>Dong</span></h1>
+          <p class="ob-tag">Catat uang jadi gampang,<br />hidup jadi lebih tenang.</p>
+        </div>
+        <ul class="ob-points">
+          <li><span class="ob-pt">💬</span><div><b>Ketik kayak chat</b><small>"kopi 15rb" langsung tercatat rapi</small></div></li>
+          <li><span class="ob-pt">🗓️</span><div><b>Jatah harian otomatis</b><small>Dibagi sampai tanggal gajian</small></div></li>
+          <li><span class="ob-pt">🐷</span><div><b>Kejar target tabungan</b><small>Dari HP baru sampai liburan</small></div></li>
+        </ul>
+        <button class="btn btn-gold btn-lg btn-block" data-action="ob-next">Mulai Sekarang</button>
+      </div>
+
+      <form class="ob-step" id="obStep2" hidden autocomplete="off">
+        <div class="ob-head">
+          <button type="button" class="icon-btn" data-action="ob-back" aria-label="Kembali"><svg class="i"><use href="#i-chev-l" /></svg></button>
+          <span class="ob-dots"><i class="on"></i><i class="on"></i></span>
+        </div>
+        <h2 class="ob-title">Kenalan dulu yuk</h2>
+        <p class="ob-sub">Semua data tersimpan di HP kamu sendiri. Bisa diubah kapan saja.</p>
+        <label class="field"><span>Nama panggilan</span>
+          <input type="text" id="obName" placeholder="Contoh: Dimas" maxlength="24" required /></label>
+        <label class="field"><span>Uang pegangan sekarang</span>
+          <div class="money-input"><i>Rp</i><input type="text" inputmode="numeric" id="obBalance" placeholder="0" data-money /></div></label>
+        <label class="field"><span>Dana darurat yang dikunci <em>(opsional)</em></span>
+          <div class="money-input"><i>Rp</i><input type="text" inputmode="numeric" id="obEmergency" placeholder="0" data-money /></div></label>
+        <div class="field-row">
+          <label class="field"><span>Target hitung mundur</span>
+            <input type="text" id="obTargetLabel" value="Gajian" maxlength="24" /></label>
+          <label class="field"><span>Tanggalnya</span>
+            <input type="date" id="obTargetDate" /></label>
+        </div>
+        <button type="submit" class="btn btn-gold btn-lg btn-block">Selesai, Masuk ke Dompet</button>
+      </form>
+    </div>
+
+    <!-- VIEWS -->
+    <main class="views" id="views">
+
+      <!-- BERANDA -->
+      <section class="view active" id="view-home" aria-label="Beranda">
+        <header class="home-top">
+          <div class="hello">
+            <svg class="logo-sm"><use href="#logo" /></svg>
+            <div>
+              <p class="hello-sub" id="helloSub">Selamat datang</p>
+              <h1 class="hello-name" id="helloName">Halo!</h1>
+            </div>
+          </div>
+          <button class="icon-btn" data-action="open-settings" aria-label="Pengaturan & profil"><svg class="i"><use href="#i-user" /></svg></button>
+        </header>
+        <div id="homeBody" class="stack"></div>
+      </section>
+
+      <!-- RIWAYAT -->
+      <section class="view" id="view-history" aria-label="Riwayat">
+        <header class="page-top"><h1>Riwayat</h1>
+          <div class="month-nav">
+            <button class="icon-btn sm" data-action="month-prev" aria-label="Bulan sebelumnya"><svg class="i"><use href="#i-chev-l" /></svg></button>
+            <strong id="histMonthLabel">Bulan ini</strong>
+            <button class="icon-btn sm" data-action="month-next" aria-label="Bulan berikutnya"><svg class="i"><use href="#i-chev-r" /></svg></button>
+          </div>
+        </header>
+        <div class="stack">
+          <div id="histSummary" class="split-card"></div>
+          <label class="search"><svg class="i"><use href="#i-search" /></svg>
+            <input type="search" id="searchTx" placeholder="Cari catatan atau kategori" aria-label="Cari transaksi" /></label>
+          <div id="histChips" class="chip-scroll" role="group" aria-label="Filter kategori"></div>
+          <div id="histList"></div>
+        </div>
+      </section>
+
+      <!-- ANGGARAN & TABUNGAN -->
+      <section class="view" id="view-budget" aria-label="Anggaran">
+        <header class="page-top"><h1>Rencana</h1></header>
+        <div class="stack">
+          <div class="seg" role="tablist" aria-label="Pilih bagian">
+            <button role="tab" class="seg-btn active" data-action="budget-tab" data-tab="plan">Anggaran</button>
+            <button role="tab" class="seg-btn" data-action="budget-tab" data-tab="goals">Tabungan</button>
+          </div>
+          <div id="budgetBody" class="stack"></div>
+        </div>
+      </section>
+
+      <!-- CHAT -->
+      <section class="view view-chat" id="view-chat" aria-label="Chat asisten">
+        <header class="chat-head">
+          <svg class="logo-sm"><use href="#logo" /></svg>
+          <div><h1>Asisten Dong</h1><p><i class="live"></i> Online · ketik transaksi langsung dicatat</p></div>
+        </header>
+        <div class="chip-scroll chat-chips" role="group" aria-label="Pesan cepat">
+          <button class="chip" data-prompt="dapat duit 280rb">+ Pemasukan 280rb</button>
+          <button class="chip" data-prompt="makan warteg 10rb">Warteg 10rb</button>
+          <button class="chip" data-prompt="beli kopi 15k">Kopi 15k</button>
+          <button class="chip" data-prompt="sisa berapa?">Cek sisa</button>
+          <button class="chip" data-prompt="sisa hari">Cek hari</button>
+          <button class="chip" data-prompt="laporan bulan ini">Laporan</button>
+          <button class="chip" data-prompt="menu hemat">Ide warteg</button>
+          <button class="chip" data-prompt="bantuan">Bantuan</button>
+        </div>
+        <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
+        <form id="chatForm" class="chat-form" autocomplete="off">
+          <input type="text" id="chatInput" placeholder="Contoh: makan warteg 12rb" aria-label="Pesan" required />
+          <button type="submit" class="send-btn" aria-label="Kirim"><svg class="i"><use href="#i-send" /></svg></button>
+        </form>
+      </section>
+    </main>
+
+    <!-- NAVIGASI BAWAH -->
+    <nav class="bottom-nav" id="bottomNav" aria-label="Navigasi utama">
+      <button class="nav-btn active" data-view="home" aria-current="page"><svg class="i"><use href="#i-home" /></svg><span>Beranda</span></button>
+      <button class="nav-btn" data-view="history"><svg class="i"><use href="#i-list" /></svg><span>Riwayat</span></button>
+      <button class="fab" data-action="new-tx" aria-label="Catat transaksi baru"><svg class="i"><use href="#i-plus" /></svg></button>
+      <button class="nav-btn" data-view="budget"><svg class="i"><use href="#i-pie" /></svg><span>Rencana</span></button>
+      <button class="nav-btn" data-view="chat"><svg class="i"><use href="#i-chat" /></svg><span>Chat</span></button>
+    </nav>
+
+    <!-- SHEETS -->
+    <div class="backdrop" id="backdrop" data-action="close-sheet"></div>
+
+    <!-- Sheet: transaksi -->
+    <div class="sheet" id="sheetTx" role="dialog" aria-modal="true" aria-labelledby="txTitle" aria-hidden="true">
+      <div class="sheet-grab"></div>
+      <div class="sheet-head">
+        <h2 id="txTitle">Catat Transaksi</h2>
+        <button class="icon-btn sm" data-action="close-sheet" aria-label="Tutup"><svg class="i"><use href="#i-close" /></svg></button>
+      </div>
+      <div class="sheet-body">
+        <div class="seg seg-tx" role="group" aria-label="Jenis transaksi">
+          <button type="button" class="seg-btn active out" data-action="tx-type" data-type="expense">Pengeluaran</button>
+          <button type="button" class="seg-btn in" data-action="tx-type" data-type="income">Pemasukan</button>
+        </div>
+        <div class="amount-box">
+          <span class="amount-cur">Rp</span>
+          <input type="text" inputmode="numeric" id="txAmount" placeholder="0" data-money aria-label="Nominal" />
+        </div>
+        <div class="chip-row" id="txQuick"></div>
+        <p class="field-error" id="txError" role="alert" hidden></p>
+        <div id="txCatWrap">
+          <p class="mini-label">Kategori</p>
+          <div class="cat-grid" id="txCats"></div>
+        </div>
+        <label class="field"><span>Catatan</span>
+          <input type="text" id="txNote" placeholder="Contoh: warteg telur tempe" maxlength="60" /></label>
+        <label class="field"><span>Tanggal</span>
+          <input type="date" id="txDate" /></label>
+      </div>
+      <div class="sheet-foot">
+        <button class="btn btn-danger-soft" id="txDelete" data-action="tx-delete" hidden><svg class="i"><use href="#i-trash" /></svg> Hapus</button>
+        <button class="btn btn-primary btn-lg grow" data-action="tx-save" id="txSave">Simpan</button>
+      </div>
+    </div>
+
+    <!-- Sheet: target tabungan -->
+    <div class="sheet" id="sheetGoal" role="dialog" aria-modal="true" aria-labelledby="goalTitle" aria-hidden="true">
+      <div class="sheet-grab"></div>
+      <div class="sheet-head">
+        <h2 id="goalTitle">Target Tabungan</h2>
+        <button class="icon-btn sm" data-action="close-sheet" aria-label="Tutup"><svg class="i"><use href="#i-close" /></svg></button>
+      </div>
+      <div class="sheet-body">
+        <p class="mini-label">Pilih ikon</p>
+        <div class="emoji-row" id="goalEmojis"></div>
+        <label class="field"><span>Nama target</span>
+          <input type="text" id="goalName" placeholder="Contoh: Laptop baru" maxlength="30" /></label>
+        <label class="field"><span>Nominal target</span>
+          <div class="money-input"><i>Rp</i><input type="text" inputmode="numeric" id="goalTarget" placeholder="0" data-money /></div></label>
+        <p class="field-error" id="goalError" role="alert" hidden></p>
+      </div>
+      <div class="sheet-foot">
+        <button class="btn btn-danger-soft" id="goalDelete" data-action="goal-delete" hidden><svg class="i"><use href="#i-trash" /></svg> Hapus</button>
+        <button class="btn btn-primary btn-lg grow" data-action="goal-save">Simpan Target</button>
+      </div>
+    </div>
+
+    <!-- Sheet: setor tabungan -->
+    <div class="sheet" id="sheetDeposit" role="dialog" aria-modal="true" aria-labelledby="depTitle" aria-hidden="true">
+      <div class="sheet-grab"></div>
+      <div class="sheet-head">
+        <h2 id="depTitle">Setor Tabungan</h2>
+        <button class="icon-btn sm" data-action="close-sheet" aria-label="Tutup"><svg class="i"><use href="#i-close" /></svg></button>
+      </div>
+      <div class="sheet-body">
+        <p class="dep-goal" id="depGoalName"></p>
+        <div class="amount-box">
+          <span class="amount-cur">Rp</span>
+          <input type="text" inputmode="numeric" id="depAmount" placeholder="0" data-money aria-label="Nominal setoran" />
+        </div>
+        <div class="chip-row" id="depQuick"></div>
+        <p class="field-error" id="depError" role="alert" hidden></p>
+        <p class="hint" id="depHint"></p>
+      </div>
+      <div class="sheet-foot">
+        <button class="btn btn-gold btn-lg grow" data-action="dep-save">Setor Sekarang</button>
+      </div>
+    </div>
+
+    <!-- Sheet: pengaturan -->
+    <div class="sheet sheet-tall" id="sheetSettings" role="dialog" aria-modal="true" aria-labelledby="setTitle" aria-hidden="true">
+      <div class="sheet-grab"></div>
+      <div class="sheet-head">
+        <h2 id="setTitle">Profil & Pengaturan</h2>
+        <button class="icon-btn sm" data-action="close-sheet" aria-label="Tutup"><svg class="i"><use href="#i-close" /></svg></button>
+      </div>
+      <div class="sheet-body">
+        <p class="mini-label">Profil</p>
+        <label class="field"><span>Nama panggilan</span>
+          <input type="text" id="setName" maxlength="24" /></label>
+
+        <p class="mini-label">Keuangan</p>
+        <label class="field"><span>Saldo awal</span>
+          <div class="money-input"><i>Rp</i><input type="text" inputmode="numeric" id="setBalance" data-money /></div></label>
+        <label class="field"><span>Dana darurat terkunci</span>
+          <div class="money-input"><i>Rp</i><input type="text" inputmode="numeric" id="setEmergency" data-money /></div></label>
+        <div class="field-row">
+          <label class="field"><span>Nama target</span>
+            <input type="text" id="setTargetLabel" maxlength="24" /></label>
+          <label class="field"><span>Tanggal target</span>
+            <input type="date" id="setTargetDate" /></label>
+        </div>
+
+        <p class="mini-label">Tampilan</p>
+        <div class="seg" role="group" aria-label="Tema">
+          <button type="button" class="seg-btn" data-action="theme" data-theme="auto">Otomatis</button>
+          <button type="button" class="seg-btn" data-action="theme" data-theme="light">Terang</button>
+          <button type="button" class="seg-btn" data-action="theme" data-theme="dark">Gelap</button>
+        </div>
+
+        <p class="mini-label">Data</p>
+        <div class="list-actions">
+          <button type="button" class="row-btn" data-action="export-csv"><svg class="i"><use href="#i-download" /></svg><span><b>Ekspor CSV</b><small>Buka di Excel / Google Sheets</small></span></button>
+          <button type="button" class="row-btn" data-action="backup"><svg class="i"><use href="#i-download" /></svg><span><b>Cadangkan data</b><small>Simpan semua data jadi file</small></span></button>
+          <button type="button" class="row-btn" data-action="restore"><svg class="i"><use href="#i-upload" /></svg><span><b>Pulihkan data</b><small>Impor dari file cadangan</small></span></button>
+          <button type="button" class="row-btn" id="btnInstall" data-action="install" hidden><svg class="i"><use href="#i-plus" /></svg><span><b>Pasang aplikasi</b><small>Tambahkan ke layar utama</small></span></button>
+          <button type="button" class="row-btn danger" data-action="reset"><svg class="i"><use href="#i-trash" /></svg><span><b>Reset semua data</b><small>Kembali ke awal, tidak bisa dibatalkan</small></span></button>
+        </div>
+        <input type="file" id="restoreFile" accept="application/json,.json" hidden />
+        <p class="hint center">DompetinDong v5 · data tersimpan di browser perangkat ini</p>
+      </div>
+      <div class="sheet-foot">
+        <button class="btn btn-primary btn-lg grow" data-action="settings-save">Simpan Perubahan</button>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <span id="toastMsg"></span>
+      <button id="toastUndo" class="toast-undo" hidden>Urungkan</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
